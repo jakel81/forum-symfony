@@ -27,29 +27,39 @@ class DefaultController extends Controller
         $list = $repository->getAllThemes()->getArrayResult();
         $postListByYear = $postRepository->getPostsGroupedByYear();
 
-        //Création du formulaire
-        $post = new Post();
-        $post->setCreatedAt(new \DateTime());
-        $form = $this->createForm(PostType::class, $post);
+        //Gestion des nouveaux posts
+        $user = $this->getUser();
+        $roles = isset($user)?$user->getRoles():[];
+        $formView = null;
+        if(in_array("ROLE_AUTHOR", $roles)) {
+            //Création du formulaire
+            $post = new Post();
+            $post->setCreatedAt(new \DateTime());
+            $post->setAuthor($user);
+            $form = $this->createForm(PostType::class, $post);
 
-        //Hydratation de l'entité post
-        $form->handleRequest($request);
+            //Hydratation de l'entité post
+            $form->handleRequest($request);
 
-        //Traitement du formulaire
-        if($form->isSubmitted() and $form->isValid()){
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($post);
-            $em->flush();
+            //Traitement du formulaire
+            if ($form->isSubmitted() and $form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($post);
+                $em->flush();
 
-            //Redirection
-            return $this->redirectToRoute("homepage");
+                //Redirection
+                return $this->redirectToRoute("homepage");
+            }
+
+            $formView = $form->createView();
         }
+        //Fin de la gestion des nouveaux posts
 
         return $this->render('default/index.html.twig',
             [
                 "themeList" => $list,
                 "postList"=>$postListByYear,
-                "postForm" => $form->createView()
+                "postForm" => $formView
             ]);
     }
 

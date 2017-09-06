@@ -20,9 +20,11 @@
         </tbody>
     </table>
 
-    <h2>Nouveau post</h2>
+    {% if  is_granted('ROLE_AUTHOR') %}
+        <h2>Nouveau post</h2>
 
-    {{ form(postForm) }}
+        {{ form(postForm) }}
+    {% endif %}
 
 {% endblock %}
 
