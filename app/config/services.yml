@@ -8,19 +8,4 @@ services:
     #    class: AppBundle\Directory\ClassName
     #    arguments: ['@another_service_name', 'plain_value', '%parameter_name%']
 
-    post.entity:
-      class: AppBundle\Entity\Post
-
-    post.form:
-      class: AppBundle\Form\PostType
-
-    post.form.handler:
-      class: AppBundle\Form\Handler\PostFormHandler
-      arguments:
-        - "@doctrine.orm.entity_manager"
-        - "@request_stack"
-        - "@form.factory"
-        - "@post.entity"
-        - "AppBundle\\Form\\PostType"
-        - "@stof_doctrine_extensions.uploadable.manager"
 

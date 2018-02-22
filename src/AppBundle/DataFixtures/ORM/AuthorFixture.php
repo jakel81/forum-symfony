@@ -25,15 +25,12 @@ class AuthorFixture extends AbstractFixture implements OrderedFixtureInterface, 
      */
     public function load(ObjectManager $manager)
     {
-        $encoderFactory = $this->container->get("security.encoder_factory");
-        $encoder = $encoderFactory->getEncoder(new Author());
-        $password = $encoder->encodePassword("123", null);
+
 
         $author = new Author();
         $author->setName("Hugo")
             ->setFirstName("Victor")
-            ->setEmail("v.hugo@miserable.fr")
-            ->setPassword($password);
+            ->setEmail("v.hugo@miserable.fr");
 
         $this->addReference("auteur_1", $author);
         $manager->persist($author);
@@ -41,8 +38,7 @@ class AuthorFixture extends AbstractFixture implements OrderedFixtureInterface, 
         $author = new Author();
         $author->setName("Ducasse")
             ->setFirstName("Isidore")
-            ->setEmail("lautreamont@maldoror.com")
-            ->setPassword($password);
+            ->setEmail("lautreamont@maldoror.com");
 
         $this->addReference("auteur_2", $author);
         $manager->persist($author);
@@ -50,8 +46,7 @@ class AuthorFixture extends AbstractFixture implements OrderedFixtureInterface, 
         $author = new Author();
         $author->setName("Trump")
             ->setFirstName("Donald")
-            ->setEmail("president@moron.con")
-            ->setPassword($password);
+            ->setEmail("president@moron.con");
 
         $this->addReference("auteur_3", $author);
         $manager->persist($author);

@@ -24,62 +24,11 @@ class DefaultController extends Controller
         $postRepository = $this->getDoctrine()
             ->getRepository("AppBundle:Post");
 
-        $list = $repository->getAllThemes()->getArrayResult();
-        $postListByYear = $postRepository->getPostsGroupedByYear();
-
-        //Gestion des nouveaux posts
-        $user = $this->getUser();
-        $roles = isset($user)?$user->getRoles():[];
-        $formView = null;
-
-        if(in_array("ROLE_AUTHOR", $roles)) {
-
-            $formHandler = $this->get("post.form.handler");
-
-            $formHandler->getEntity()
-                ->setAuthor($user)
-                ->setCreatedAt(new \DateTime());
-
-            if($formHandler->process()){
-                return $this->redirectToRoute("homepage");
-            }
-
-            $formView = $formHandler->getFormView();
-
-            /*
-            //Création du formulaire
-            $post = new Post();
-            $post->setCreatedAt(new \DateTime());
-            $post->setAuthor($user);
-            $form = $this->createForm(PostType::class, $post);
-
-            //Hydratation de l'entité post
-            $form->handleRequest($request);
-
-            //Traitement du formulaire
-            if ($form->isSubmitted() and $form->isValid()) {
-
-                $uploadManager = $this->get("stof_doctrine_extensions.uploadable.manager");
-                $uploadManager->markEntityToUpload($post, $post->getImageFileName());
-
-                $em = $this->getDoctrine()->getManager();
-                $em->persist($post);
-                $em->flush();
-
-                //Redirection
-                return $this->redirectToRoute("homepage");
-            }
-
-            $formView = $form->createView();
-            */
-        }
-        //Fin de la gestion des nouveaux posts
+        $list = $repository->findAll();
 
         return $this->render('default/index.html.twig',
             [
-                "themeList" => $list,
-                "postList"=>$postListByYear,
-                "postForm" => $formView
+                "themeList" => $list
             ]);
     }
 
@@ -95,7 +44,7 @@ class DefaultController extends Controller
 
         $theme = $repository->find($id);
 
-        $allThemes = $repository->getAllThemes()->getArrayResult();
+        $allThemes = $repository->findAll();
 
         if(! $theme){
             throw new NotFoundHttpException("Thème introuvable");
@@ -107,59 +56,5 @@ class DefaultController extends Controller
             "postList" => $theme->getPosts(),
             "all" => $allThemes
         ]);
-    }
-
-    /**
-     * @Route("/inscription", name="author_registration")
-     * @param Request $request
-     * @return Response
-     */
-    public function registrationAction(Request $request){
-
-        $author = new Author();
-
-        $form = $this->createForm(
-            AuthorType::class,
-            $author
-        );
-
-        $form->handleRequest($request);
-
-        if($form->isSubmitted() and $form->isValid()){
-            $em = $this->getDoctrine()->getManager();
-
-            //Encodage du mot de passe
-            $encoderFactory = $this->get("security.encoder_factory");
-            $encoder = $encoderFactory->getEncoder($author);
-            $author->setPassword($encoder->encodePassword($author->getPlainPassword(), null));
-            $author->setPlainPassword(null);
-
-            //Enregistrement dans la base de données
-            $em->persist($author);
-            $em->flush();
-
-        }
-
-        return $this->render("default/author-registration.html.twig",[
-            "registrationForm" => $form->createView()
-        ]);
-    }
-
-    /**
-     * @Route("/author-login", name="author_login")
-     * @return Response
-     */
-    public function authorLoginAction(){
-
-        $securityUtils = $this->get("security.authentication_utils");
-
-        return $this->render(":default:generic-login.html.twig",
-            [
-                "title" => "Identification des auteurs",
-                "action" => $this->generateUrl("author_login_check"),
-                "userName" => $securityUtils->getLastUsername(),
-                "error" => $securityUtils->getLastAuthenticationError()
-            ]
-        );
     }
 }

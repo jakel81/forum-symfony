@@ -11,13 +11,6 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *
  * @ORM\Table(name="posts")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PostRepository")
- * @Gedmo\Uploadable(
- *     allowOverwrite=true,
- *     filenameGenerator="SHA1",
- *     maxSize="20000000",
- *     allowedTypes="image/jpeg,image/png"
- * )
- * @Gedmo\Loggable(logEntryClass="AppBundle\Entity\Log")
  */
 class Post
 {
@@ -63,38 +56,13 @@ class Post
      */
     private $answers;
 
-    /**
-     * @ORM\Column(name="slug", type="string", length=255, unique=true)
-     * @Gedmo\Slug(fields={"title"})
-     * @var string
-     */
-    private $slug;
 
     /**
-     * @var string
-     * @ORM\Column(name="image_file_name", type="string", length=80, nullable=true)
-     * @Gedmo\UploadableFileName()
+     * Constructor
      */
-    private $imageFileName;
-
-
-    /**
-     * @return string
-     */
-    public function getImageFileName()
+    public function __construct()
     {
-        return $this->imageFileName;
-    }
-
-    /**
-     * @param string $imageFileName
-     * @return Post
-     */
-    public function setImageFileName($imageFileName)
-    {
-        $this->imageFileName = $imageFileName;
-
-        return $this;
+        $this->answers = new ArrayCollection();
     }
 
 
@@ -105,26 +73,6 @@ class Post
     {
         return $this->author->getFirstName() . " " . $this->author->getName();
     }
-
-    /**
-     * @return string
-     */
-    public function getSlug()
-    {
-        return $this->slug;
-    }
-
-    /**
-     * @param string $slug
-     * @return Post
-     */
-    public function setSlug($slug)
-    {
-        $this->slug = $slug;
-
-        return $this;
-    }
-
 
     /**
      * @return Author
@@ -152,20 +100,6 @@ class Post
      * @ORM\Column(name="createdAt", type="datetime")
      */
     private $createdAt;
-
-
-    public function getSortedAnswers()
-    {
-        $iterator = $this->answers->getIterator();
-        $iterator->uasort(
-            function ($a, $b) {
-                return $b->getTotalVotes() <=> $a->getTotalVotes();
-            }
-        );
-
-        $sorted = new ArrayCollection(iterator_to_array($iterator));
-        return $sorted;
-    }
 
     /**
      * Get id
@@ -249,13 +183,7 @@ class Post
         return $this->title;
     }
 
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->answers = new \Doctrine\Common\Collections\ArrayCollection();
-    }
+
 
     /**
      * Set theme
@@ -264,7 +192,7 @@ class Post
      *
      * @return Post
      */
-    public function setTheme(\AppBundle\Entity\Theme $theme = null)
+    public function setTheme(Theme $theme = null)
     {
         $this->theme = $theme;
 
@@ -288,7 +216,7 @@ class Post
      *
      * @return Post
      */
-    public function addAnswer(\AppBundle\Entity\Answer $answer)
+    public function addAnswer(Answer $answer)
     {
         $this->answers[] = $answer;
 
@@ -300,7 +228,7 @@ class Post
      *
      * @param \AppBundle\Entity\Answer $answer
      */
-    public function removeAnswer(\AppBundle\Entity\Answer $answer)
+    public function removeAnswer(Answer $answer)
     {
         $this->answers->removeElement($answer);
     }

@@ -14,37 +14,13 @@
                         {{ theme.name }}
                     </a>
                 </td>
-                <td>{{ theme.numberOfPosts }} posts</td>
+                <td>{{ theme.posts | length }} posts</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    {% if  is_granted('ROLE_AUTHOR') %}
-        <h2>Nouveau post</h2>
 
-        {{ form(postForm) }}
-    {% endif %}
-
-{% endblock %}
-
-{% block aside %}
-    <h3>Les posts par années</h3>
-    <ul>
-        {% for item in postList %}
-            <li>
-                <a href="{{ path('post_by_year', {'year': item.yearPublished}) }}">
-                    {{ item.yearPublished }} ({{ item.numberOfPosts }})
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-
-    <script src="{{ asset('bundles/ivoryckeditor/ckeditor.js') }}"></script>
 {% endblock %}
 
 

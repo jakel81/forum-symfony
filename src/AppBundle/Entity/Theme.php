@@ -79,7 +79,7 @@ class Theme
      */
     public function __construct()
     {
-        $this->posts = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->posts = new ArrayCollection();
     }
 
     /**
@@ -89,7 +89,7 @@ class Theme
      *
      * @return Theme
      */
-    public function addPost(\AppBundle\Entity\Post $post)
+    public function addPost(Post $post)
     {
         $this->posts[] = $post;
 
@@ -101,7 +101,7 @@ class Theme
      *
      * @param \AppBundle\Entity\Post $post
      */
-    public function removePost(\AppBundle\Entity\Post $post)
+    public function removePost(Post $post)
     {
         $this->posts->removeElement($post);
     }
