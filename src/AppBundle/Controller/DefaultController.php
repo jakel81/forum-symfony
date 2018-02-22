@@ -31,7 +31,22 @@ class DefaultController extends Controller
         $user = $this->getUser();
         $roles = isset($user)?$user->getRoles():[];
         $formView = null;
+
         if(in_array("ROLE_AUTHOR", $roles)) {
+
+            $formHandler = $this->get("post.form.handler");
+
+            $formHandler->getEntity()
+                ->setAuthor($user)
+                ->setCreatedAt(new \DateTime());
+
+            if($formHandler->process()){
+                return $this->redirectToRoute("homepage");
+            }
+
+            $formView = $formHandler->getFormView();
+
+            /*
             //Création du formulaire
             $post = new Post();
             $post->setCreatedAt(new \DateTime());
@@ -56,6 +71,7 @@ class DefaultController extends Controller
             }
 
             $formView = $form->createView();
+            */
         }
         //Fin de la gestion des nouveaux posts
 

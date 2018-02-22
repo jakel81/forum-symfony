@@ -4,8 +4,6 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use AppBundle\Entity\Theme;
-use AppBundle\Entity\Answer;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
@@ -79,6 +77,7 @@ class Post
      */
     private $imageFileName;
 
+
     /**
      * @return string
      */
@@ -94,6 +93,7 @@ class Post
     public function setImageFileName($imageFileName)
     {
         $this->imageFileName = $imageFileName;
+
         return $this;
     }
 
@@ -101,8 +101,9 @@ class Post
     /**
      * @return string
      */
-    public function getAuthorFullName(){
-        return $this->author->getFirstName(). " ". $this->author->getName();
+    public function getAuthorFullName()
+    {
+        return $this->author->getFirstName() . " " . $this->author->getName();
     }
 
     /**
@@ -120,6 +121,7 @@ class Post
     public function setSlug($slug)
     {
         $this->slug = $slug;
+
         return $this;
     }
 
@@ -152,7 +154,18 @@ class Post
     private $createdAt;
 
 
+    public function getSortedAnswers()
+    {
+        $iterator = $this->answers->getIterator();
+        $iterator->uasort(
+            function ($a, $b) {
+                return $b->getTotalVotes() <=> $a->getTotalVotes();
+            }
+        );
 
+        $sorted = new ArrayCollection(iterator_to_array($iterator));
+        return $sorted;
+    }
 
     /**
      * Get id
@@ -235,6 +248,7 @@ class Post
     {
         return $this->title;
     }
+
     /**
      * Constructor
      */

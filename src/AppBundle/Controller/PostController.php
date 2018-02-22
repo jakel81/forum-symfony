@@ -3,7 +3,10 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\Answer;
+use AppBundle\Entity\Vote;
 use AppBundle\Form\PostType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,11 +27,13 @@ class PostController extends Controller
      */
     public function detailsAction($slug){
 
-        $repository = $this->getDoctrine()
+        $postRepository = $this->getDoctrine()
             ->getRepository("AppBundle:Post");
+        $answerRepository = $this->getDoctrine()
+            ->getRepository("AppBundle:Answer");
 
         /** @var $post Post */
-        $post = $repository->findOneBySlug($slug);
+        $post = $postRepository->findOneBySlug($slug);
 
         if(! $post){
             throw new NotFoundHttpException("post introuvable");
@@ -36,7 +41,8 @@ class PostController extends Controller
 
         return $this->render("post/details.html.twig", [
             "post" => $post,
-            "answerList" => $post->getAnswers()
+            "answerList" => $post->getSortedAnswers(),
+            "test" => $post->getAnswers()->toArray()
         ]);
     }
 
@@ -90,6 +96,30 @@ class PostController extends Controller
         }
 
         return $this->render("post/edit.html.twig", ["postForm"=>$form->createView()]);
+    }
+
+    /**
+     * @Route("/answer-vote/{id}/{voteValue}", name="answer_vote")
+     * @param Request $request
+     * @param Answer $answer
+     * @param $vote
+     * @ParamConverter("answer", options={"exclude": {"vote"}})
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function voteAction(Request $request, Answer $answer, $voteValue){
+        $referer = $request->headers->get('referer');
+        $user = $this->getUser();
+
+        $vote = new Vote();
+        $vote->setAuthor($user)
+            ->setAnswer($answer)
+            ->setVote($voteValue);
+        $em = $this->getDoctrine()->getManager();
+
+        $em->persist($vote);
+        $em->flush();
+
+        return $this->redirect($referer);
     }
 
 }

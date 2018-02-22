@@ -1,6 +1,9 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
+
+    {{ dump(test) }}
+
     <ol class="breadcrumb">
         <li>
             <a href="{{ path('homepage') }}">Liste des thèmes</a>
@@ -29,8 +32,19 @@
         <h3 class="text-center">Nouvelle réponse</h3>
     </div>
 
-    {% for answer in post.answers %}
+    {% for answer in answerList %}
         <div class="col-md-8 col-md-offset-2">
+            {{ answer.totalVotes }}
+
+            {{ answer.canVoteUp(app.user) }}
+            {% if answer.canVoteUp(app.user) %}
+                <a href="{{ path('answer_vote', {'id': answer.id, 'voteValue': 1}) }}">Voter +</a>
+            {% endif %}
+
+            {% if answer.canVoteDown(app.user) %}
+                <a href="{{ path('answer_vote', {'id': answer.id, 'voteValue': -1}) }}">Voter -</a>
+            {% endif %}
+
             <p>le {{ answer.createdAt | date('d/m/Y') }} par {{ answer.author }}</p>
             <p>{{ answer.text }}</p>
             <hr>
