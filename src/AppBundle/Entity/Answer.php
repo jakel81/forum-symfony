@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Vote;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use AppBundle\Entity\Post;
@@ -53,44 +54,12 @@ class Answer
     private $post;
 
     /**
-     * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Vote", mappedBy="answer")
+     * Constructor
      */
-    private $votes;
-
-
-    public function getTotalVotes(){
-        $total = 0;
-        foreach ($this->votes->toArray() as $vote){
-            $total += $vote->getVote();
-        }
-        return $total;
+    public function __construct()
+    {
+        $this->votes = new ArrayCollection();
     }
-
-
-    public function canVoteUp($user){
-        return $this->canVote($user, -1);
-    }
-
-    public function canVoteDown($user){
-        return $this->canVote($user, 1);
-    }
-
-    private function canVote($user, $targetVote){
-        $foundVote = $this->votes->exists(function ($key, $item) use($user, $targetVote){
-            $found = $item->getAuthor()== $user;
-            return $found  and $item->getVote() == $targetVote;
-        });
-
-        $hasvote = $this->votes->exists(function ($key, $item) use($user){
-            return $item->getAuthor() == $user;
-        });
-
-        dump($foundVote or ! $hasvote);
-
-        return $foundVote or ! $hasvote;
-    }
-
 
     /**
      * Get id
@@ -181,7 +150,7 @@ class Answer
      *
      * @return Answer
      */
-    public function setPost(\AppBundle\Entity\Post $post = null)
+    public function setPost(Post $post = null)
     {
         $this->post = $post;
 
@@ -197,45 +166,5 @@ class Answer
     {
         return $this->post;
     }
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->votes = new \Doctrine\Common\Collections\ArrayCollection();
-    }
 
-    /**
-     * Add vote
-     *
-     * @param \AppBundle\Entity\Vote $vote
-     *
-     * @return Answer
-     */
-    public function addVote(\AppBundle\Entity\Vote $vote)
-    {
-        $this->votes[] = $vote;
-
-        return $this;
-    }
-
-    /**
-     * Remove vote
-     *
-     * @param \AppBundle\Entity\Vote $vote
-     */
-    public function removeVote(\AppBundle\Entity\Vote $vote)
-    {
-        $this->votes->removeElement($vote);
-    }
-
-    /**
-     * Get votes
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getVotes()
-    {
-        return $this->votes;
-    }
 }

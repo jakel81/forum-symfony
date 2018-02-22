@@ -154,18 +154,14 @@ class Post
     private $createdAt;
 
 
-    public function getSortedAnswers()
+    /**
+     * Constructor
+     */
+    public function __construct()
     {
-        $iterator = $this->answers->getIterator();
-        $iterator->uasort(
-            function ($a, $b) {
-                return $b->getTotalVotes() <=> $a->getTotalVotes();
-            }
-        );
-
-        $sorted = new ArrayCollection(iterator_to_array($iterator));
-        return $sorted;
+        $this->answers = new ArrayCollection();
     }
+
 
     /**
      * Get id
@@ -249,13 +245,7 @@ class Post
         return $this->title;
     }
 
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->answers = new \Doctrine\Common\Collections\ArrayCollection();
-    }
+
 
     /**
      * Set theme
@@ -264,7 +254,7 @@ class Post
      *
      * @return Post
      */
-    public function setTheme(\AppBundle\Entity\Theme $theme = null)
+    public function setTheme(Theme $theme = null)
     {
         $this->theme = $theme;
 
@@ -288,7 +278,7 @@ class Post
      *
      * @return Post
      */
-    public function addAnswer(\AppBundle\Entity\Answer $answer)
+    public function addAnswer(Answer $answer)
     {
         $this->answers[] = $answer;
 
@@ -300,7 +290,7 @@ class Post
      *
      * @param \AppBundle\Entity\Answer $answer
      */
-    public function removeAnswer(\AppBundle\Entity\Answer $answer)
+    public function removeAnswer(Answer $answer)
     {
         $this->answers->removeElement($answer);
     }

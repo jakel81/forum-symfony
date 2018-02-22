@@ -1,9 +1,6 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-
-    {{ dump(test) }}
-
     <ol class="breadcrumb">
         <li>
             <a href="{{ path('homepage') }}">Liste des thèmes</a>
@@ -19,11 +16,8 @@
 
     <p>par {{ post.author.email }} le {{ post.createdAt | date('d/m/Y') }}</p>
 
-    {% if post.imageFileName %}
-        <img src="{{ asset('uploadedFiles/' ~ post.imageFileName) }}" class="img-circle">
-    {% endif %}
 
-    <p>{{ post.text | purify}}</p>
+    <p>{{ post.text}}</p>
 
     <hr>
     <h2>Les réponses ({{ post.answers | length }})</h2>
@@ -34,22 +28,10 @@
 
     {% for answer in answerList %}
         <div class="col-md-8 col-md-offset-2">
-            {{ answer.totalVotes }}
-
-            {{ answer.canVoteUp(app.user) }}
-            {% if answer.canVoteUp(app.user) %}
-                <a href="{{ path('answer_vote', {'id': answer.id, 'voteValue': 1}) }}">Voter +</a>
-            {% endif %}
-
-            {% if answer.canVoteDown(app.user) %}
-                <a href="{{ path('answer_vote', {'id': answer.id, 'voteValue': -1}) }}">Voter -</a>
-            {% endif %}
-
             <p>le {{ answer.createdAt | date('d/m/Y') }} par {{ answer.author }}</p>
             <p>{{ answer.text }}</p>
             <hr>
         </div>
-
     {% endfor %}
 
 {% endblock %}
