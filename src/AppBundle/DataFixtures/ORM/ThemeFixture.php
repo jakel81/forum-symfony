@@ -1,6 +1,6 @@
 <?php
-namespace AppBundle\DataFixtures\ORM;
 
+namespace AppBundle\DataFixtures\ORM;
 
 use AppBundle\Entity\Theme;
 use Doctrine\Common\DataFixtures\AbstractFixture;
@@ -14,13 +14,14 @@ class ThemeFixture extends AbstractFixture implements OrderedFixtureInterface
      * Load data fixtures with the passed EntityManager
      *
      * @param ObjectManager $manager
+     * @throws \Doctrine\Common\DataFixtures\BadMethodCallException
      */
     public function load(ObjectManager $manager)
     {
         $themes = [];
         $themeData = ["SQL", "Symfony", "PHP", "Javascript", "Ionic"];
 
-        foreach ($themeData as $item){
+        foreach ($themeData as $item) {
             $entity = new Theme();
             $entity->setName($item);
             $themes[] = $entity;
@@ -28,11 +29,7 @@ class ThemeFixture extends AbstractFixture implements OrderedFixtureInterface
 
             $manager->persist($entity);
         }
-
         $manager->flush();
-
-
-
     }
 
     /**

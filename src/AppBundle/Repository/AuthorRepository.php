@@ -10,4 +10,18 @@ namespace AppBundle\Repository;
  */
 class AuthorRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    /**
+     * @return array
+     */
+    public function getAuthorSummary()
+    {
+        $qb = $this->createQueryBuilder('a');
+
+        $qb->select('a.id, a.name, a.firstName, count(p) as numberOfPosts')
+            ->innerJoin('a.posts', 'p')
+            ->groupBy('p.author');
+
+        return $qb->getQuery()->getArrayResult();
+    }
 }

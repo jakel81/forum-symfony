@@ -2,11 +2,9 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Entity\Vote;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use AppBundle\Entity\Post;
-use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Answer
@@ -28,14 +26,14 @@ class Answer
 
     /**
      * @var string
-     *
+     *@Assert\NotBlank(message="Le mail ne peut être vide")
      * @ORM\Column(name="author", type="string", length=50)
      */
     private $author;
 
     /**
      * @var string
-     *
+     * @Assert\NotBlank(message="Le texte ne peut être vide")
      * @ORM\Column(name="answer_text", type="text")
      */
     private $text;
@@ -166,5 +164,4 @@ class Answer
     {
         return $this->post;
     }
-
 }

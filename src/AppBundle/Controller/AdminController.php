@@ -2,11 +2,8 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Theme;
-use AppBundle\Form\ThemeType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -21,7 +18,8 @@ class AdminController extends Controller
      * @Route("/", name="admin_home")
      * @return Response
      */
-    public function indexAction(){
+    public function indexAction()
+    {
         return $this->render("admin/index.html.twig");
     }
 

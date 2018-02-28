@@ -4,7 +4,6 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use AppBundle\Entity\Post;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -36,7 +35,7 @@ class Theme
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="Post", mappedBy="theme")
+     * @ORM\OneToMany(targetEntity="Post", mappedBy="theme", fetch="EAGER")
      */
     private $posts;
 
@@ -74,6 +73,7 @@ class Theme
     {
         return $this->name;
     }
+
     /**
      * Constructor
      */

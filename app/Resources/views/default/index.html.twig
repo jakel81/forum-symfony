@@ -4,6 +4,7 @@
 
     <h1>Liste des thèmes</h1>
 
+    <h2>{{ message }}</h2>
 
     <table class="table">
         <tbody>
@@ -20,7 +21,34 @@
         </tbody>
     </table>
 
+{% endblock %}
 
+{% block aside %}
+    <h3>Les derniers posts</h3>
+    <ul>
+        {% for post in LastPosts %}
+            <li><a href="{{ path('post_details', {slug:post.slug}) }}">{{ post.title }}</a></li>
+        {% endfor %}
+    </ul>
+
+    <h3>Les auteurs</h3>
+    <ul>
+        {% for author in authorSummary %}
+            <li>
+                <a href="{{ path('post_par_auteur', {id:author.id}) }}">{{ author.firstName }} {{ author.name | upper }}
+                    ({{ author.numberOfPosts }})</a></li>
+        {% endfor %}
+    </ul>
+
+    <h3>Posts par année</h3>
+    <ul>
+        {% for item in yearSummary %}
+            <li><a href="{{ path('post_par_annee',{'year' : item.yearPublished}) }}">{{ item.yearPublished }}
+                    ({{ item.numberOfPosts }})</a></li>
+        {% endfor %}
+    </ul>
+
+    {{ dump(yearSummary) }}
 {% endblock %}
 
 

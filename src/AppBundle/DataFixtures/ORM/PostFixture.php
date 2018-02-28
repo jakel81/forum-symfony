@@ -22,6 +22,7 @@ class PostFixture extends AbstractFixture implements OrderedFixtureInterface
      * Load data fixtures with the passed EntityManager
      *
      * @param ObjectManager $manager
+     * @throws \Doctrine\Common\DataFixtures\BadMethodCallException
      */
     public function load(ObjectManager $manager)
     {
@@ -56,16 +57,16 @@ class PostFixture extends AbstractFixture implements OrderedFixtureInterface
 
         $postNumber = 1;
 
-        foreach ($postData as $item){
+        foreach ($postData as $item) {
             $entity = new Post();
-            $author_reference = "auteur_". mt_rand(1,3);
+            $author_reference = "auteur_" . mt_rand(1, 3);
             $entity->setTitle($item["title"])
                 ->setTheme($this->getReference($item["theme"]))
                 ->setCreatedAt($faker->dateTimeThisYear())
                 ->setAuthor($this->getReference($author_reference))
                 ->setText($faker->text(800));
 
-            $this->addReference("post_". $postNumber++, $entity);
+            $this->addReference("post_" . $postNumber++, $entity);
 
             $manager->persist($entity);
         }
