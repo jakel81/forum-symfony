@@ -11,3 +11,4 @@ services:
     app.hello:
         class: AppBundle\Services\HelloService
         arguments: ["@security.token_storage"]
+        tags: [{name: kernel.event_suscriber}]

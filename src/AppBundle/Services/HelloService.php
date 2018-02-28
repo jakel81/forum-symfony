@@ -9,13 +9,17 @@
 namespace AppBundle\Services;
 
 use AppBundle\Entity\Author;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class HelloService
  * @package AppBundle\Services
  */
-class HelloService
+class HelloService implements EventSubscriberInterface
 {
     /**
      * @var string
@@ -46,5 +50,21 @@ class HelloService
     public function greet()
     {
         return "Hello " . $this->name;
+    }
+
+    /**
+     * @param GetResponseEvent $event
+     */
+    public function onKernelRequest(GetResponseEvent $event)
+    {
+        $event->setResponse(new Response("maintenance"));
+    }
+
+    /**
+     * @return array
+     */
+    public static function getSubscribedEvents()
+    {
+        return [KernelEvents::REQUEST => "onKernelRequest"];
     }
 }
